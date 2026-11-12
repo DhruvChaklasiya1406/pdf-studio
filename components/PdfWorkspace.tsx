@@ -821,6 +821,10 @@ export default function PdfWorkspace({
                 {t.shortTitle}
               </Link>
             ))}
+            <span className="text-slate-300">|</span>
+            <Link href="/privacy-policy" className="hover:text-slate-900">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-slate-900">Terms</Link>
+            <Link href="/contact" className="hover:text-slate-900">Contact</Link>
           </div>
         </div>
       </footer>

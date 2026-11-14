@@ -170,38 +170,30 @@ export default function PdfStudioApp() {
   const [pageCount, setPageCount] = useState<number | null>(null);
   const [outputName, setOutputName] = useState("merged-document");
 
-  // Split & Rotate
   const [pageRange, setPageRange] = useState("1");
   const [rotationAngle, setRotationAngle] = useState<90 | 180 | 270>(90);
-
-  // Organize Pages
   const [organizePages, setOrganizePages] = useState<PageItem[]>([]);
 
-  // Watermark
   const [watermarkText, setWatermarkText] = useState("CONFIDENTIAL");
   const [watermarkStyle, setWatermarkStyle] = useState<"diagonal" | "tiled">("diagonal");
   const [watermarkColor, setWatermarkColor] = useState<"gray" | "red" | "blue">("gray");
   const [watermarkOpacity, setWatermarkOpacity] = useState(0.25);
   const [watermarkSize, setWatermarkSize] = useState(52);
 
-  // Page Numbers
   const [numberPos, setNumberPos] = useState<
     "bottom-center" | "bottom-right" | "bottom-left" | "top-right"
   >("bottom-center");
   const [numberFormat, setNumberFormat] = useState<"page-of" | "slash" | "plain">("page-of");
   const [startNumber, setStartNumber] = useState(1);
 
-  // Crop Margins (in points)
   const [cropMargin, setCropMargin] = useState(36);
 
-  // Sign PDF Canvas
   const sigCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
   const [signTarget, setSignTarget] = useState<"last" | "first" | "all">("last");
   const [signPos, setSignPos] = useState<"bottom-right" | "bottom-left">("bottom-right");
 
-  // UI Status
   const [isDragging, setIsDragging] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -315,7 +307,6 @@ export default function PdfStudioApp() {
     );
   };
 
-  // Signature Pad Drawing Handlers
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = sigCanvasRef.current;
     if (!canvas) return;
@@ -608,7 +599,7 @@ export default function PdfStudioApp() {
         try {
           pdf.getForm().flatten();
         } catch {
-          // Document has no interactive form fields; continue cleaning metadata
+          // Document has no interactive form fields
         }
         pdf.setTitle(outputName);
         pdf.setProducer("PDFStudio Local Browser Engine");
@@ -625,7 +616,6 @@ export default function PdfStudioApp() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
-      {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
@@ -644,7 +634,6 @@ export default function PdfStudioApp() {
       </header>
 
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-8 py-10 space-y-8">
-        {/* Hero */}
         <section className="text-center max-w-2xl mx-auto">
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
             Every PDF tool you need,{" "}
@@ -656,7 +645,6 @@ export default function PdfStudioApp() {
           </p>
         </section>
 
-        {/* 10-Tool Selector Grid */}
         <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {TOOLS.map((tool) => {
             const active = tool.id === activeToolId;
@@ -688,7 +676,6 @@ export default function PdfStudioApp() {
           })}
         </section>
 
-        {/* Active Workspace */}
         <section className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-10">
           <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
             <div>
@@ -712,7 +699,6 @@ export default function PdfStudioApp() {
             )}
           </div>
 
-          {/* Dropzone */}
           <div
             onDragOver={(e) => {
               e.preventDefault();
@@ -754,7 +740,6 @@ export default function PdfStudioApp() {
             </p>
           </div>
 
-          {/* File List */}
           {files.length > 0 && (
             <div className="mt-6 space-y-3">
               <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -810,7 +795,6 @@ export default function PdfStudioApp() {
             </div>
           )}
 
-          {/* Organize Pages Grid */}
           {files.length > 0 && activeTool.id === "organize" && organizePages.length > 0 && (
             <div className="mt-6 p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
               <div className="flex items-center justify-between">
@@ -826,7 +810,7 @@ export default function PdfStudioApp() {
                     className={`p-3 rounded-xl border text-center transition ${
                       p.deleted
                         ? "bg-rose-50 border-rose-200 opacity-50"
-                        : "bg-white border-slate-200 shadow-2xs"
+                        : "bg-white border-slate-200 shadow-xs"
                     }`}
                   >
                     <div className="h-20 rounded-lg bg-slate-100 flex flex-col items-center justify-center mb-2">
@@ -879,7 +863,6 @@ export default function PdfStudioApp() {
             </div>
           )}
 
-          {/* Split Controls */}
           {files.length > 0 && activeTool.id === "split" && (
             <div className="mt-5 p-4 rounded-2xl bg-slate-50 border border-slate-200">
               <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
@@ -895,7 +878,6 @@ export default function PdfStudioApp() {
             </div>
           )}
 
-          {/* Rotate Controls */}
           {files.length > 0 && activeTool.id === "rotate" && (
             <div className="mt-5 p-4 rounded-2xl bg-slate-50 border border-slate-200">
               <span className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-2">
@@ -920,7 +902,6 @@ export default function PdfStudioApp() {
             </div>
           )}
 
-          {/* Watermark Controls */}
           {files.length > 0 && activeTool.id === "watermark" && (
             <div className="mt-5 p-5 rounded-2xl bg-slate-50 border border-slate-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
@@ -999,7 +980,6 @@ export default function PdfStudioApp() {
             </div>
           )}
 
-          {/* Page Numbers Controls */}
           {files.length > 0 && activeTool.id === "numbers" && (
             <div className="mt-5 p-5 rounded-2xl bg-slate-50 border border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
@@ -1046,7 +1026,6 @@ export default function PdfStudioApp() {
             </div>
           )}
 
-          {/* Sign PDF Pad */}
           {files.length > 0 && activeTool.id === "sign" && (
             <div className="mt-5 p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -1103,7 +1082,6 @@ export default function PdfStudioApp() {
             </div>
           )}
 
-          {/* Crop Margins Controls */}
           {files.length > 0 && activeTool.id === "crop" && (
             <div className="mt-5 p-4 rounded-2xl bg-slate-50 border border-slate-200">
               <label className="block text-xs font-bold uppercase text-slate-700 mb-1">
@@ -1121,7 +1099,6 @@ export default function PdfStudioApp() {
             </div>
           )}
 
-          {/* Output Filename + Action Button */}
           {files.length > 0 && (
             <div className="mt-6 flex flex-col sm:flex-row sm:items-end gap-4">
               <div className="flex-1 max-w-xs">
@@ -1164,7 +1141,6 @@ export default function PdfStudioApp() {
           )}
         </section>
 
-        {/* Legal / Contact Info Drawer */}
         {infoModal && (
           <section className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-3">
             <div className="flex items-center justify-between">

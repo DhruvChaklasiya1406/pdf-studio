@@ -332,7 +332,7 @@ export default function PdfStudioApp() {
       }));
       setOrganizePages(base);
 
-      const pdfjs = await loadPdfJs();
+      try { const pdfjs = await loadPdfJs();
       if (!pdfjs) return;
       const doc = await pdfjs.getDocument({ data: new Uint8Array(buffer.slice(0)) }).promise;
       const limit = Math.min(total, 50);
@@ -352,7 +352,7 @@ export default function PdfStudioApp() {
           };
         }
       }
-      setOrganizePages([...updated]);
+      setOrganizePages([...updated]); } catch {}
     } catch {
       setPageCount(null);
       setErrorMsg("Could not read PDF pages. Ensure the file is not password-protected.");
@@ -1225,7 +1225,7 @@ export default function PdfStudioApp() {
               <button
                 type="button"
                 onClick={handleProcess}
-                disabled={processing || loadingThumbs}
+                disabled={processing}
                 className="px-8 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm rounded-xl shadow-sm transition disabled:opacity-50"
               >
                 {processing ? "Processing..." : activeTool.actionLabel}
